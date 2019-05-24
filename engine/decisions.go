@@ -143,6 +143,8 @@ func talkTo(state *State, arguments ...string) {
 
 	for _, character := range state.CurrentLocation.ActiveCharacters {
 		if strings.ToLower(character.Name) == strings.ToLower(arguments[0]) {
+			state.Characters = append(state.Characters, character)
+
 			entry := convoengine.FindEntryNode(character.RootConversationNode)
 			if entry == nil {
 				fmt.Print("They ignore you")
@@ -189,7 +191,7 @@ func exit(state *State, arguments ...string) {
 	os.Exit(1)
 }
 
-func lookAround(state *State, arguements ...string) {
+func lookAround(state *State, arguments ...string) {
 	if len(state.CurrentLocation.PointsOfInterest) == 0 && len(state.CurrentLocation.ActiveCharacters) == 0 {
 		fmt.Print("You see nothing here")
 	}
@@ -232,6 +234,34 @@ func whereAmI(state *State, arguments ...string) {
 	}
 }
 
+func jettisonCharacter(state *State, arguments ...string) {
+	if len(arguments) < 1 {
+		fmt.Print("You must provide a character name")
+		return
+	}
+
+	for _, character := range state.Characters {
+		buf := bufio.NewReader(os.Stdin)
+
+		if strings.ToLower(character.Name) == strings.ToLower(arguments[0]) {
+			fmt.Println(character.AfterDeath)
+			fmt.Println()
+
+			if character.CorrectChoice {
+				fmt.Println("You've successfully found the saboteur and saved your crew and the intelligence. Now you can use that intelligence to threaten the enemy's hidden, peaceful worlds and end the war")
+			} else {
+				fmt.Println("Because you did not find the saboteur you and your crew were killed when they struck again, completely destroying the ship instead of simply disabling it. You are dead. Good job.")
+			}
+
+			fmt.Print("Press any key to exit the game...")
+			buf.ReadString('\n')
+			os.Exit(1)
+		}
+	}
+
+	fmt.Print("You must first talk to a character in order to jettison them")
+}
+
 func init() {
 	commands = make(map[string]func(state *State, arguments ...string))
 
@@ -246,6 +276,8 @@ func init() {
 	commands["examine"] = examinePointOfInterest
 	commands["look at"] = examinePointOfInterest
 	commands["where am i"] = whereAmI
+
+	commands["jettison"] = jettisonCharacter
 }
 
 func in(needle string, haystack []string) bool {
@@ -270,5 +302,7 @@ where am I                - prints player's location and the surrounding areas
 who is here               - lists any people present in the player's location
 talk to [person's name]   - initiates conversation with desired person
 examine [name or thing]   - provides a description of the character or point of interest selected
+
+jettison [name]           - jettisons the selected crew member to space and ends the game
 `)
 }

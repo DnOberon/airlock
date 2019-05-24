@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/dnoberon/airlock/characters"
@@ -25,6 +26,7 @@ type Configuration struct {
 }
 
 var version string
+var baseConfigurationSite string
 
 func main() {
 	var configuration Configuration
@@ -40,10 +42,21 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		// Load from Web
 	} else {
-		err := json.Unmarshal([]byte(engine.BaseGame), &configuration)
-		if err != nil {
-			log.Fatal(err)
+		resp, err := http.Get(baseConfigurationSite)
+		// any errors we go straight to loading the encoded game
+		if err != nil || resp.StatusCode < 200 || resp.StatusCode > 299 {
+			err := json.Unmarshal([]byte(engine.BaseGame), &configuration)
+			if err != nil {
+				log.Fatal(err)
+			}
+		} else {
+			err = json.NewDecoder(resp.Body).Decode(&configuration)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 
