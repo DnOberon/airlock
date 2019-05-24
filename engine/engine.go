@@ -16,11 +16,12 @@ type State struct {
 }
 
 // BaseGame is to be used if user opts out of newest game release
-const BaseGame = `{
+const BaseGame = `
+{
   "entry": {
     "title": "Airlock",
     "author": "John Darrington",
-    "introductionText": "The galaxy is at war. Posing as an independent freighter, you and your crew of six are attempting to return home with intelligence that could turn the tide of war in your favor. \n \nSomeone aboard has purposely disabled the ship and you must now await rescue.\n \nYou will run out of air before rescue arrives. Your only chance is to jettison a single crew member in order to make the air in the ship last long enough. \n \nIf you jettison the spy the intel is safe. If you jettison someone else....let's just say the war will only get bloodier. \n \n \nChoose wisely...",
+    "introductionText": "The galaxy is at war. Posing as an independent freighter, you and your crew of six are attempting to return home with intelligence that could turn the tide of war in your favor.\n\nSomeone aboard has purposely disabled the ship and you must now await rescue. You will run out of air before rescue arrives. Your only chance is to jettison a single crew member in order to make the air in the ship last long enough. \n\nIf you jettison the spy the intel is safe. If you jettison someone else - let's just say the war will only get bloodier. \n \nChoose wisely...",
     "initialArea": "main"
   },
   "locations": [
@@ -50,13 +51,15 @@ const BaseGame = `{
     {
       "id": "james",
       "name": "James",
+      "afterDeath": "James did not sabotage the ship. He has a family at home you monster.",
       "description": "James is a ruggedly handsome asian man.",
       "conversations": [
         {
           "id": "root",
           "text": "Hello, my name is James - what's yours?",
           "entryPoint": true,
-          "choices": ["say_name", "say_goodbye", "call_name"]
+          "choices": ["say_name", "say_goodbye", "call_name"],
+          "canBeRecalled": true
         },
         {
           "id": "say_name",
@@ -76,6 +79,21 @@ const BaseGame = `{
           "trigger": "You're a turd.",
           "text": "That's not very nice.",
           "choices": ["say_goodbye"]
+        }
+      ]
+    },
+    {
+      "id": "robert",
+      "name": "Robert",
+      "afterDeath": "Robert worked hard on the ship - then worked hard on stopping the ship. After you jettisoned him you found all the evidence you needed.",
+      "correctChoice": true,
+      "conversations": [
+        {
+          "id": "root",
+          "text": "Hello, my name is James - what's yours?",
+          "entryPoint": true,
+          "choices": ["say_name", "say_goodbye", "call_name"],
+          "canBeRecalled": true
         }
       ]
     }

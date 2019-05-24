@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/mitchellh/go-wordwrap"
+
 	"github.com/dnoberon/airlock/characters"
 	"github.com/dnoberon/airlock/engine"
 	"github.com/dnoberon/airlock/locations"
@@ -60,10 +62,16 @@ func main() {
 		}
 	}
 
-	fmt.Printf(`%s version %s 
+	// print basic information about the game
+	fmt.Printf(`%s %s 
 Created By %s	
+
 %s
-`, configuration.Entry.Title, version, configuration.Entry.Author, configuration.Entry.IntroductionText)
+`,
+		configuration.Entry.Title,
+		version,
+		configuration.Entry.Author,
+		wordwrap.WrapString(configuration.Entry.IntroductionText, 80))
 
 	configuration.Characters = characters.InitCharacters(configuration.Characters)
 

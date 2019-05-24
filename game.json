@@ -2,7 +2,7 @@
   "entry": {
     "title": "Airlock",
     "author": "John Darrington",
-    "introductionText": "The galaxy is at war. Posing as an independent freighter, you and your crew of six are attempting to return home with intelligence that could turn the tide of war in your favor. \n \nSomeone aboard has purposely disabled the ship and you must now await rescue.\n \nYou will run out of air before rescue arrives. Your only chance is to jettison a single crew member in order to make the air in the ship last long enough. \n \nIf you jettison the spy the intel is safe. If you jettison someone else....let's just say the war will only get bloodier. \n \n \nChoose wisely...",
+    "introductionText": "The galaxy is at war. Posing as an independent freighter, you and your crew of six are attempting to return home with intelligence that could turn the tide of war in your favor.\n\nSomeone aboard has purposely disabled the ship and you must now await rescue. You will run out of air before rescue arrives. Your only chance is to jettison a single crew member in order to make the air in the ship last long enough. \n\nIf you jettison the spy the intel is safe. If you jettison someone else - let's just say the war will only get bloodier. \n \nChoose wisely...",
     "initialArea": "main"
   },
   "locations": [

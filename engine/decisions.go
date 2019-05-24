@@ -53,6 +53,7 @@ func (s *State) Decide() {
 	}
 
 	fmt.Println()
+	fmt.Println("I do not understand that command")
 	fmt.Print("use command 'help' for information on how to play")
 	return
 }
@@ -63,14 +64,14 @@ func listCharactersAtLocation(state *State, arguments ...string) {
 	}
 
 	for _, character := range state.CurrentLocation.ActiveCharacters {
-		fmt.Print(fmt.Sprintf("You see %s here", character.Name))
+		fmt.Print(fmt.Sprintf("You see %s here.", character.Name))
 	}
 }
 
 // move doesn't work on windows
 func move(state *State, arguments ...string) {
 	if len(arguments) != 1 {
-		fmt.Print("You must provide a single cardinal direction e.g north, south, east, or west")
+		fmt.Print("You must provide a single cardinal direction e.g north, south, east, or west.")
 		return
 	}
 
@@ -81,7 +82,7 @@ func move(state *State, arguments ...string) {
 		if state.CurrentLocation.North != nil {
 			state.CurrentLocation = state.CurrentLocation.North
 		} else {
-			fmt.Print("You cannot go this way")
+			fmt.Print("You cannot go this way.")
 			return
 		}
 
@@ -89,7 +90,7 @@ func move(state *State, arguments ...string) {
 		if state.CurrentLocation.South != nil {
 			state.CurrentLocation = state.CurrentLocation.South
 		} else {
-			fmt.Print("You cannot go this way")
+			fmt.Print("You cannot go this way.")
 			return
 		}
 
@@ -97,7 +98,7 @@ func move(state *State, arguments ...string) {
 		if state.CurrentLocation.East != nil {
 			state.CurrentLocation = state.CurrentLocation.East
 		} else {
-			fmt.Print("You cannot go this way")
+			fmt.Print("You cannot go this way.")
 			return
 		}
 
@@ -105,7 +106,7 @@ func move(state *State, arguments ...string) {
 		if state.CurrentLocation.West != nil {
 			state.CurrentLocation = state.CurrentLocation.West
 		} else {
-			fmt.Print("You cannot go this way")
+			fmt.Print("You cannot go this way.")
 			return
 		}
 
@@ -114,13 +115,16 @@ func move(state *State, arguments ...string) {
 		return
 	}
 
-	fmt.Println(fmt.Sprintf("You've arrived at %s", state.CurrentLocation.Name))
-	fmt.Print(state.CurrentLocation.Description)
+	fmt.Println(fmt.Sprintf("You've arrived at %s.", state.CurrentLocation.Name))
+	fmt.Println(state.CurrentLocation.Description)
+
+	fmt.Println()
+	lookAround(state, arguments...)
 }
 
 func goBack(state *State, arguments ...string) {
 	if state.PreviousLocation == nil {
-		fmt.Print("You have nowhere to go back to")
+		fmt.Print("You have nowhere to go back to.")
 		return
 	}
 
@@ -132,12 +136,12 @@ func goBack(state *State, arguments ...string) {
 
 func talkTo(state *State, arguments ...string) {
 	if len(state.CurrentLocation.ActiveCharacters) == 0 {
-		fmt.Print("There is no one here to talk to")
+		fmt.Print("There is no one here to talk to.")
 		return
 	}
 
 	if len(arguments) < 1 {
-		fmt.Print("You must provide a character name")
+		fmt.Print("You must provide a character name.")
 		return
 	}
 
@@ -147,7 +151,7 @@ func talkTo(state *State, arguments ...string) {
 
 			entry := convoengine.FindEntryNode(character.RootConversationNode)
 			if entry == nil {
-				fmt.Print("They ignore you")
+				fmt.Print("They ignore you.")
 				return
 			}
 
@@ -161,7 +165,7 @@ func talkTo(state *State, arguments ...string) {
 
 func examinePointOfInterest(state *State, arguments ...string) {
 	if len(state.CurrentLocation.PointsOfInterest) == 0 {
-		fmt.Print("There is nothing here to look at")
+		fmt.Print("There is nothing here to look at.")
 		return
 	}
 
@@ -194,14 +198,17 @@ func exit(state *State, arguments ...string) {
 func lookAround(state *State, arguments ...string) {
 	if len(state.CurrentLocation.PointsOfInterest) == 0 && len(state.CurrentLocation.ActiveCharacters) == 0 {
 		fmt.Print("You see nothing here")
+		return
 	}
 
 	for _, point := range state.CurrentLocation.PointsOfInterest {
-		fmt.Println("You see a " + point.Name)
+		fmt.Println("There is a " + point.Name + "here.")
 	}
 
+	fmt.Println()
+
 	for _, character := range state.CurrentLocation.ActiveCharacters {
-		fmt.Print(fmt.Sprintf("You see %s here", character.Name))
+		fmt.Print(fmt.Sprintf("You see %s here.", character.Name))
 	}
 }
 
