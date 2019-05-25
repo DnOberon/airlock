@@ -6,6 +6,8 @@ The game engine itself is static. Commands and interaction types do not change. 
 
 The game's characters (and their conversation trees), items, and locations can easily be changed by providing your own, custom `game.json` file. 
 
+*Disclaimer: There be dragons in the codebase.* 
+
 <br>
 
 ## Available commands
