@@ -26,6 +26,13 @@ const BaseGame = `
     "introductionText": "The galaxy is at war. Posing as an independent freighter, you and your crew of six are attempting to return home with intelligence that could turn the tide of war in your favor.\n\nSomeone aboard has purposely disabled the ship and you must now await rescue. You will run out of air before rescue arrives. Your only chance is to jettison a single crew member in order to make the air in the ship last long enough. \n\nIf you jettison the spy the intel is safe. If you jettison someone else - let's just say the war will only get bloodier. \n \nChoose wisely...",
     "initialArea": "main"
   },
+  "items":[
+{
+  "id": "wallet",
+  "name": "Leather wallet",
+  "description": "The leather wallet has the initials BYB on it."
+}
+  ],
   "locations": [
     {
       "id": "main_room",
@@ -39,7 +46,8 @@ const BaseGame = `
           "name": "plaque",
           "description": "The ship's information plaque: \n Built 2051 by OmesCorp"
         }
-      ]
+      ],
+      "items":["wallet"]
     },
     {
       "id": "hallway",
@@ -78,6 +86,7 @@ const BaseGame = `
         },
         {
           "id": "call_name",
+          "mustHaveItem": "wallet",
           "trigger": "You're a turd.",
           "text": "That's not very nice.",
           "choices": ["say_goodbye"]
