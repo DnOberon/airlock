@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/dnoberon/airlock/items"
+
 	"github.com/mitchellh/go-wordwrap"
 
 	"github.com/dnoberon/airlock/characters"
@@ -25,6 +27,7 @@ type Configuration struct {
 
 	Characters []characters.Character
 	Locations  []locations.Location
+	Items      []items.Item
 }
 
 var version string
@@ -76,11 +79,12 @@ Created By %s
 	configuration.Characters = characters.InitCharacters(configuration.Characters)
 
 	state := &engine.State{}
-	var l []*locations.Location
-	var c []*characters.Character
+	var locationList []*locations.Location
+	var characterList []*characters.Character
+	var itemList []*items.Item
 
 	for i := range configuration.Locations {
-		l = append(l, &configuration.Locations[i])
+		locationList = append(locationList, &configuration.Locations[i])
 
 		if configuration.Locations[i].ID == configuration.Entry.InitialArea {
 			state.CurrentLocation = &configuration.Locations[i]
@@ -88,13 +92,17 @@ Created By %s
 	}
 
 	for i := range configuration.Characters {
-		c = append(c, &configuration.Characters[i])
+		characterList = append(characterList, &configuration.Characters[i])
 	}
 
-	locations.InitLocations(l, c)
+	for i := range configuration.Items {
+		itemList = append(itemList, &configuration.Items[i])
+	}
+
+	locations.InitLocations(locationList, characterList, itemList)
 
 	if state.CurrentLocation == nil {
-		state.CurrentLocation = l[0]
+		state.CurrentLocation = locationList[0]
 	}
 
 	fmt.Println("")

@@ -2,6 +2,7 @@ package locations
 
 import (
 	"github.com/dnoberon/airlock/characters"
+	"github.com/dnoberon/airlock/items"
 )
 
 // Location represents a physical location in the game space
@@ -14,6 +15,8 @@ type Location struct {
 	Characters       []string
 	ActiveCharacters []*characters.Character
 	Directions       []string
+	Items            []string
+	ActiveItems      []*items.Item
 
 	North *Location
 	South *Location
@@ -28,12 +31,18 @@ type PointOfInterest struct {
 }
 
 // InitLocations builds map of locations and characters
-func InitLocations(locations []*Location, characters []*characters.Character) {
+func InitLocations(locations []*Location, characters []*characters.Character, itemList []*items.Item) {
 	for _, rootLocation := range locations {
 		// load characters
 		for _, character := range characters {
 			if in(character.ID, rootLocation.Characters) {
 				rootLocation.ActiveCharacters = append(rootLocation.ActiveCharacters, character)
+			}
+		}
+
+		for _, item := range itemList {
+			if in(item.ID, rootLocation.Items) {
+				rootLocation.ActiveItems = append(rootLocation.ActiveItems, item)
 			}
 		}
 

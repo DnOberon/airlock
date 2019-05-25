@@ -6,6 +6,9 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"github.com/dnoberon/airlock/items"
+	"github.com/mitchellh/go-wordwrap"
 )
 
 func in(needle string, haystack []string) bool {
@@ -34,16 +37,16 @@ func FindEntryNode(start *ConversationNode) *ConversationNode {
 }
 
 // Talk starts the conversation
-func (root *ConversationNode) Talk() {
+func (root *ConversationNode) Talk(itemList []*items.Item) {
 	choiceMap := map[string]*ConversationNode{}
 
 	fmt.Println()
 
 	// text after visited
 	if root.visited && root.AfterVisitedText != "" {
-		fmt.Println(root.AfterVisitedText)
+		fmt.Println(wordwrap.WrapString(root.AfterVisitedText, 80))
 	} else {
-		fmt.Println(root.Text)
+		fmt.Println(wordwrap.WrapString(root.Text, 80))
 	}
 
 	// make sure we print any output before exit
@@ -58,7 +61,18 @@ func (root *ConversationNode) Talk() {
 			continue
 		}
 
-		fmt.Println(fmt.Sprintf("%d. %s", i+1, root.choices[i].Trigger))
+		if root.choices[i].MustHaveItem != "" {
+			for _, item := range itemList {
+				if item.ID == root.choices[i].MustHaveItem {
+					fmt.Println(wordwrap.WrapString(fmt.Sprintf("%d. %s", i+1, root.choices[i].Trigger), 80))
+					choiceMap[fmt.Sprintf("%d", i+1)] = root.choices[i]
+				}
+			}
+
+			continue
+		}
+
+		fmt.Println(wordwrap.WrapString(fmt.Sprintf("%d. %s", i+1, root.choices[i].Trigger), 80))
 		choiceMap[fmt.Sprintf("%d", i+1)] = root.choices[i]
 	}
 
@@ -83,5 +97,5 @@ func (root *ConversationNode) Talk() {
 	}
 
 	node.parent = root
-	node.Talk()
+	node.Talk(itemList)
 }

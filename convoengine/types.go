@@ -8,6 +8,7 @@ type ConversationNode struct {
 	AfterVisitedText string
 	EntryPoint       bool
 	ExitPoint        bool
+	MustHaveItem     string
 
 	IgnoreAfterVisit bool
 	visited          bool

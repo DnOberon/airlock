@@ -2,6 +2,7 @@ package engine
 
 import (
 	"github.com/dnoberon/airlock/characters"
+	"github.com/dnoberon/airlock/items"
 	"github.com/dnoberon/airlock/locations"
 )
 
@@ -11,6 +12,7 @@ type State struct {
 	CurrentLocation  *locations.Location
 	PreviousLocation *locations.Location
 
+	Inventory  []*items.Item
 	Characters []*characters.Character
 	Locations  []*locations.Location
 }

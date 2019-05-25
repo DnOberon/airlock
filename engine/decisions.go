@@ -7,7 +7,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/dnoberon/airlock/items"
+
 	"github.com/dnoberon/airlock/convoengine"
+	"github.com/mitchellh/go-wordwrap"
 )
 
 var commands map[string]func(state *State, arguments ...string)
@@ -155,7 +158,7 @@ func talkTo(state *State, arguments ...string) {
 				return
 			}
 
-			entry.Talk()
+			entry.Talk(state.Inventory)
 		}
 	}
 
@@ -175,15 +178,29 @@ func examinePointOfInterest(state *State, arguments ...string) {
 	}
 
 	for _, point := range state.CurrentLocation.PointsOfInterest {
-		if strings.ToLower(point.Name) == strings.ToLower(arguments[0]) {
-			fmt.Print(point.Description)
+		if strings.ToLower(point.Name) == strings.ToLower(strings.Join(arguments, " ")) {
+			fmt.Print(wordwrap.WrapString(point.Description, 80))
 			return
 		}
 	}
 
 	for _, character := range state.CurrentLocation.ActiveCharacters {
-		if strings.ToLower(character.Name) == strings.ToLower(arguments[0]) {
-			fmt.Print(character.Description)
+		if strings.ToLower(character.Name) == strings.ToLower(strings.Join(arguments, " ")) {
+			fmt.Print(wordwrap.WrapString(character.Description, 80))
+			return
+		}
+	}
+
+	for _, item := range state.Inventory {
+		if strings.ToLower(item.Name) == strings.ToLower(strings.Join(arguments, " ")) {
+			fmt.Print(wordwrap.WrapString(item.Description, 80))
+			return
+		}
+	}
+
+	for _, item := range state.CurrentLocation.ActiveItems {
+		if strings.ToLower(item.Name) == strings.ToLower(strings.Join(arguments, " ")) {
+			fmt.Print(wordwrap.WrapString(item.Description, 80))
 			return
 		}
 	}
@@ -202,13 +219,28 @@ func lookAround(state *State, arguments ...string) {
 	}
 
 	for _, point := range state.CurrentLocation.PointsOfInterest {
-		fmt.Println("There is a " + point.Name + "here.")
+		fmt.Println("There is a " + point.Name + " here.")
 	}
 
-	fmt.Println()
+	for _, item := range state.CurrentLocation.ActiveItems {
+		fmt.Println("There is a " + item.Name + " here.")
+	}
 
 	for _, character := range state.CurrentLocation.ActiveCharacters {
 		fmt.Print(fmt.Sprintf("You see %s here.", character.Name))
+	}
+
+}
+
+func inventory(state *State, arguments ...string) {
+	if len(state.Inventory) == 0 {
+		fmt.Print("You have no items in your inventory.")
+		return
+	}
+
+	fmt.Println("You have the following items:")
+	for _, item := range state.Inventory {
+		fmt.Println(item.Name)
 	}
 }
 
@@ -251,15 +283,17 @@ func jettisonCharacter(state *State, arguments ...string) {
 		buf := bufio.NewReader(os.Stdin)
 
 		if strings.ToLower(character.Name) == strings.ToLower(arguments[0]) {
-			fmt.Println(character.AfterDeath)
+			fmt.Println(wordwrap.WrapString(character.AfterDeath, 80))
 			fmt.Println()
 
 			if character.CorrectChoice {
-				fmt.Println("You've successfully found the saboteur and saved your crew and the intelligence. Now you can use that intelligence to threaten the enemy's hidden, peaceful worlds and end the war")
+				fmt.Println(wordwrap.WrapString("You've successfully found the saboteur and saved your crew and the intelligence. Now you can use that intelligence to threaten the enemy's hidden, peaceful worlds and end the war", 80))
 			} else {
-				fmt.Println("Because you did not find the saboteur you and your crew were killed when they struck again, completely destroying the ship instead of simply disabling it. You are dead. Good job.")
+				fmt.Println(wordwrap.WrapString(`Because you did not find the saboteur you and your crew were killed when they struck again, completely destroying the ship instead of simply disabling it. 
+You are dead. Good job.`, 80))
 			}
 
+			fmt.Println()
 			fmt.Print("Press any key to exit the game...")
 			buf.ReadString('\n')
 			os.Exit(1)
@@ -267,6 +301,50 @@ func jettisonCharacter(state *State, arguments ...string) {
 	}
 
 	fmt.Print("You must first talk to a character in order to jettison them")
+}
+
+func takeItem(state *State, arguments ...string) {
+	var wantedItem *items.Item
+	i := 0 // output index
+	for _, item := range state.CurrentLocation.ActiveItems {
+		if strings.ToLower(item.Name) != strings.ToLower(strings.Join(arguments, " ")) {
+			state.CurrentLocation.ActiveItems[i] = item
+			i++
+			continue
+		}
+		wantedItem = item
+	}
+
+	state.CurrentLocation.ActiveItems = state.CurrentLocation.ActiveItems[:i]
+	if wantedItem != nil {
+		state.Inventory = append(state.Inventory, wantedItem)
+		fmt.Print(wantedItem.Name + " is now in your inventory.")
+		return
+	}
+
+	fmt.Print("You can't take " + strings.Join(arguments, " "))
+}
+
+func dropItem(state *State, arguments ...string) {
+	for _, item := range state.Inventory {
+		if strings.ToLower(item.Name) == strings.ToLower(strings.Join(arguments, " ")) {
+			state.CurrentLocation.ActiveItems = append(state.CurrentLocation.ActiveItems, item)
+
+			i := 0
+			for _, item := range state.Inventory {
+				if strings.ToLower(item.Name) != strings.ToLower(strings.Join(arguments, " ")) {
+					state.Inventory[i] = item
+					i++
+					continue
+				}
+			}
+
+			fmt.Print("You've dropped " + item.Name)
+			return
+		}
+	}
+
+	fmt.Print("You don't have " + strings.Join(arguments, " "))
 }
 
 func init() {
@@ -279,6 +357,9 @@ func init() {
 	commands["talk"] = talkTo
 	commands["exit"] = exit
 
+	commands["inventory"] = inventory
+	commands["take"] = takeItem
+	commands["drop"] = dropItem
 	commands["look around"] = lookAround
 	commands["examine"] = examinePointOfInterest
 	commands["look at"] = examinePointOfInterest
@@ -309,6 +390,9 @@ where am I                - prints player's location and the surrounding areas
 who is here               - lists any people present in the player's location
 talk to [person's name]   - initiates conversation with desired person
 examine [name or thing]   - provides a description of the character or point of interest selected
+take [thing]              - adds item to inventory
+inventory                 - list items in inventory 
+drop [thing]              - drop item from inventory into current location
 
 jettison [name]           - jettisons the selected crew member to space and ends the game
 `)
