@@ -118,11 +118,7 @@ func move(state *State, arguments ...string) {
 		return
 	}
 
-	fmt.Println(fmt.Sprintf("You've arrived at %s.", state.CurrentLocation.Name))
-	fmt.Println(state.CurrentLocation.Description)
-
-	fmt.Println()
-	lookAround(state, arguments...)
+	fmt.Print(fmt.Sprintf("You've arrived at %s.", state.CurrentLocation.Name))
 }
 
 func goBack(state *State, arguments ...string) {
@@ -213,23 +209,36 @@ func exit(state *State, arguments ...string) {
 }
 
 func lookAround(state *State, arguments ...string) {
-	if len(state.CurrentLocation.PointsOfInterest) == 0 && len(state.CurrentLocation.ActiveCharacters) == 0 {
-		fmt.Print("You see nothing here")
-		return
-	}
+
+	fmt.Println(wordwrap.WrapString(state.CurrentLocation.Description, 80))
+	fmt.Println()
 
 	for _, point := range state.CurrentLocation.PointsOfInterest {
-		fmt.Println("There is a " + point.Name + " here.")
+		fmt.Println("You see " + point.Name + " here.")
 	}
 
 	for _, item := range state.CurrentLocation.ActiveItems {
-		fmt.Println("There is a " + item.Name + " here.")
+		fmt.Println("There is " + item.Name + " here.")
 	}
 
 	for _, character := range state.CurrentLocation.ActiveCharacters {
-		fmt.Print(fmt.Sprintf("You see %s here.", character.Name))
+		fmt.Println(fmt.Sprintf("You see %s here.", character.Name))
 	}
 
+	fmt.Println()
+
+	if state.CurrentLocation.North != nil {
+		fmt.Println("To the North is the " + state.CurrentLocation.North.Name)
+	}
+	if state.CurrentLocation.South != nil {
+		fmt.Println("To the South is the " + state.CurrentLocation.South.Name)
+	}
+	if state.CurrentLocation.East != nil {
+		fmt.Println("To the East is the " + state.CurrentLocation.East.Name)
+	}
+	if state.CurrentLocation.West != nil {
+		fmt.Print("To the West is the " + state.CurrentLocation.West.Name)
+	}
 }
 
 func inventory(state *State, arguments ...string) {
@@ -249,25 +258,25 @@ func whereAmI(state *State, arguments ...string) {
 	fmt.Println()
 
 	if state.CurrentLocation.North != nil {
-		fmt.Println("To the North is " + state.CurrentLocation.North.Name)
+		fmt.Println("To the North is the " + state.CurrentLocation.North.Name)
 	} else {
 		fmt.Println("There is nothing to the North")
 	}
 
 	if state.CurrentLocation.South != nil {
-		fmt.Println("To the South is " + state.CurrentLocation.South.Name)
+		fmt.Println("To the South is the " + state.CurrentLocation.South.Name)
 	} else {
 		fmt.Println("There is nothing to the South")
 	}
 
 	if state.CurrentLocation.East != nil {
-		fmt.Println("To the East is " + state.CurrentLocation.East.Name)
+		fmt.Println("To the East is the " + state.CurrentLocation.East.Name)
 	} else {
 		fmt.Println("There is nothing to the East")
 	}
 
 	if state.CurrentLocation.West != nil {
-		fmt.Print("To the West is " + state.CurrentLocation.West.Name)
+		fmt.Print("To the West is the " + state.CurrentLocation.West.Name)
 	} else {
 		fmt.Print("There is nothing to the West")
 	}
