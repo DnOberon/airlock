@@ -105,6 +105,8 @@ Created By %s
 		state.CurrentLocation = locationList[0]
 	}
 
+	state.PreviousLocation = state.CurrentLocation
+
 	fmt.Println("")
 	fmt.Println(fmt.Sprintf("You are in the %s", state.CurrentLocation.Name))
 

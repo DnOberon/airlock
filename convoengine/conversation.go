@@ -44,10 +44,12 @@ func (root *ConversationNode) Talk(itemList []*items.Item) {
 
 	// text after visited
 	if root.visited && root.AfterVisitedText != "" {
-		fmt.Println(wordwrap.WrapString(root.AfterVisitedText, 80))
+		fmt.Println(wordwrap.WrapString("\""+root.AfterVisitedText+"\"", 80))
 	} else {
-		fmt.Println(wordwrap.WrapString(root.Text, 80))
+		fmt.Println(wordwrap.WrapString("\""+root.Text+"\"", 80))
 	}
+
+	fmt.Println()
 
 	// make sure we print any output before exit
 	if root.ExitPoint {
@@ -56,6 +58,7 @@ func (root *ConversationNode) Talk(itemList []*items.Item) {
 
 	root.visited = true
 	// build and print choice map
+	index := 0 // independent index, solves hidden numbers
 	for i := range root.choices {
 		if root.choices[i].visited && root.choices[i].IgnoreAfterVisit {
 			continue
@@ -64,16 +67,19 @@ func (root *ConversationNode) Talk(itemList []*items.Item) {
 		if root.choices[i].MustHaveItem != "" {
 			for _, item := range itemList {
 				if item.ID == root.choices[i].MustHaveItem {
-					fmt.Println(wordwrap.WrapString(fmt.Sprintf("%d. %s", i+1, root.choices[i].Trigger), 80))
-					choiceMap[fmt.Sprintf("%d", i+1)] = root.choices[i]
+					index++
+
+					fmt.Println(wordwrap.WrapString(fmt.Sprintf("%d. %s", index, root.choices[i].Trigger), 80))
+					choiceMap[fmt.Sprintf("%d", index)] = root.choices[i]
 				}
 			}
 
 			continue
 		}
 
-		fmt.Println(wordwrap.WrapString(fmt.Sprintf("%d. %s", i+1, root.choices[i].Trigger), 80))
-		choiceMap[fmt.Sprintf("%d", i+1)] = root.choices[i]
+		index++
+		fmt.Println(wordwrap.WrapString(fmt.Sprintf("%d. %s", index, root.choices[i].Trigger), 80))
+		choiceMap[fmt.Sprintf("%d", index)] = root.choices[i]
 	}
 
 	if root.parent != nil && root.parent.CanBeRecalled {
@@ -93,6 +99,7 @@ func (root *ConversationNode) Talk(itemList []*items.Item) {
 
 	if !ok {
 		fmt.Print("No option selected")
+		root.Talk(itemList)
 		return
 	}
 

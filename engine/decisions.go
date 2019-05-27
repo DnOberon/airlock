@@ -78,6 +78,11 @@ func move(state *State, arguments ...string) {
 		return
 	}
 
+	if arguments[0] == "back" {
+		goBack(state, arguments...)
+		return
+	}
+
 	state.PreviousLocation = state.CurrentLocation
 
 	switch arguments[0] {
@@ -129,8 +134,7 @@ func goBack(state *State, arguments ...string) {
 
 	state.CurrentLocation, state.PreviousLocation = state.PreviousLocation, state.CurrentLocation
 
-	fmt.Println(fmt.Sprintf("You return to %s", state.CurrentLocation.Name))
-	fmt.Print(state.CurrentLocation.Description)
+	fmt.Print(fmt.Sprintf("You've returned to %s.", state.CurrentLocation.Name))
 }
 
 func talkTo(state *State, arguments ...string) {
@@ -221,6 +225,8 @@ func lookAround(state *State, arguments ...string) {
 		fmt.Println("There is " + item.Name + " here.")
 	}
 
+	fmt.Println()
+
 	for _, character := range state.CurrentLocation.ActiveCharacters {
 		fmt.Println(fmt.Sprintf("You see %s here.", character.Name))
 	}
@@ -295,14 +301,6 @@ func jettisonCharacter(state *State, arguments ...string) {
 			fmt.Println(wordwrap.WrapString(character.AfterDeath, 80))
 			fmt.Println()
 
-			if character.CorrectChoice {
-				fmt.Println(wordwrap.WrapString("You've successfully found the saboteur and saved your crew and the intelligence. Now you can use that intelligence to threaten the enemy's hidden, peaceful worlds and end the war", 80))
-			} else {
-				fmt.Println(wordwrap.WrapString(`Because you did not find the saboteur you and your crew were killed when they struck again, completely destroying the ship instead of simply disabling it. 
-You are dead. Good job.`, 80))
-			}
-
-			fmt.Println()
 			fmt.Print("Press any key to exit the game...")
 			buf.ReadString('\n')
 			os.Exit(1)
@@ -362,7 +360,7 @@ func init() {
 	commands["help"] = help
 	commands["who is here"] = listCharactersAtLocation
 	commands["move"] = move
-	commands["go back"] = goBack
+	commands["go"] = move
 	commands["talk"] = talkTo
 	commands["exit"] = exit
 

@@ -6,11 +6,10 @@ import (
 
 // Character represents an interaction ready person
 type Character struct {
-	ID            string // slug like identifier
-	Name          string
-	Description   string
-	AfterDeath    string
-	CorrectChoice bool
+	ID          string // slug like identifier
+	Name        string
+	Description string
+	AfterDeath  string
 
 	RootConversationNode *convoengine.ConversationNode
 	Conversations        []convoengine.ConversationNode
