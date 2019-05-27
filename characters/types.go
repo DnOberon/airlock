@@ -10,6 +10,7 @@ type Character struct {
 	Name        string
 	Description string
 	AfterDeath  string
+	Aliases     []string
 
 	RootConversationNode *convoengine.ConversationNode
 	Conversations        []convoengine.ConversationNode

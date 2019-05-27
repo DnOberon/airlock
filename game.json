@@ -2,7 +2,7 @@
   "entry": {
     "title": "Airlock",
     "author": "John Darrington",
-    "introductionText": "Mankind has colonized our the solar system yet still stands divided. The Inner Planets, consisting of Earth and Mars, have continually oppressed and held sway over The Colonies on Jupiter's moon and surrounding space.\n\nNeeding Earth and Mars for supplies of food and medicine The Colonies dare not openly defy them. Needing the raw minerals and hydrogen mined around Jupiter, The Inner Planets must rule space with an iron fist or risk becoming helpless and defenseless when they are unable to manufacture ships and weapons. \n\nAboard the independent space freighter Gently Weeping, you and your crew of five have managed to avoid the majority of the conflict. Recently however, you stumbled across information regarding a future attack by The Colonies on one of The Inner Planet's most lucrative, and most populated space stations. \n\nFinding the information has left your ship stranded in space and operating on emergency power. You've contacted help and a rescue ship is on the way - but you only have enough oxygen for five people. \n\nIn order to survive, and act on the intelligence you've gathered, you must jettison one of your crew into space. \n\nChoose wisely - the fate of the solar system is in your hands.",
+    "introductionText": "Mankind has colonized our the solar system yet still stands divided. The Inner Planets, consisting of Earth and Mars, have continually oppressed and held sway over The Colonies on Jupiter's moon and surrounding space.\n\nNeeding Earth and Mars for supplies of food and medicine The Colonies dare not openly defy them. Needing the raw minerals and hydrogen mined around Jupiter, The Inner Planets must rule space with an iron fist or risk becoming helpless and defenseless when they are unable to manufacture ships and weapons. \n\nAboard the independent space freighter Gently Weeping, you and your crew of five have managed to avoid the majority of the conflict. Recently however, a supply run of medical supplies was interrupted by an attack from The Colonies on one of The Inner Planet's most lucrative, and most populated space stations. \n\nThe battle has left your ship stranded in space and operating on emergency power. You've contacted help and a rescue ship is on the way - but you only have enough oxygen for five people. \n\nAs the captain it is your duty to insure the safety of both crew and cargo. The duty of choosing who lives and who dies falls to you. \n\nChoose Wisely...",
     "initialArea": "main"
   },
   "items": [
@@ -16,7 +16,6 @@
       "name": "letter",
       "description": "The letter looks very formal and is very creased, as if it'd been opened and closed numerous times. You open it slightly and see the official seal of The Colonies. The letter is addressed to an ethics board. You can't see anything else unless you open the letter further."
     }
-    
   ],
   "locations": [
     {
@@ -25,7 +24,6 @@
       "entryPoint": true,
       "description": "This is your cabin, and it has seen better days. Off to the left is your bunk, covered in clothes and data pads. To your right sits your desk - which is also a disaster. A single yellow light bar runs through the room lengthwise and gives off only a faint yellow light. On your desk sits a single picture and what looks like a newspaper.",
       "directions": ["_", "-", "north_hallway", "-"],
-      "characters": ["rebecca"],
       "pointsOfInterest": [
         {
           "name": "picture",
@@ -99,12 +97,14 @@
           "description": "This handbook contains all the laws independent freighters have to follow. This copy is well used, dog eared pages and bookmarks stick out everywhere."
         }
       ],
-      "directions": ["-", "-", "hallway", "-"]
+      "directions": ["-", "-", "south_hallway", "-"]
     },
     {
       "id": "common_area",
       "name": "The Common Area",
       "description": "Next to the cargo hold, this is the largest area in the ship. A large table takes up one half of the room and is bolted the floor. What can only be described as a \"space garage sale\" fills the other half. Random placements of furniture and personal items strewn about complete the effect. There are a few doors around the room, each leading to personal or shared quarters. Soft emergency lighting lends the room an abandoned feel.",
+      "items": ["letter"],
+      "characters": ["twins"],
       "pointsOfInterest": [
         {
           "name": "tv",
@@ -171,31 +171,31 @@
       "conversations": [
         {
           "id": "start",
-          "entryPoint":true,
+          "entryPoint": true,
           "trigger": "Hey big guy",
           "text": "Bear looks at you and smiles.",
-          "afterVisitedText": "Bear just smiles and nods",
+          "ignoreAfterVisit": true,
           "choices": ["big_guy"]
         },
         {
-          "id":"big_guy",
-          "trigger":"Doing ok big guy?",
-          "text":"\"Yes!\" then he grins as wide as he can.",
+          "id": "big_guy",
+          "trigger": "Doing ok big guy?",
+          "text": "\"Yes!\" then he grins as wide as he can.",
           "choices": ["ship_broken"],
           "ignoreAfterVisit": true
         },
         {
-          "id":"ship_broken",
-          "trigger":"You know the ship is broken?",
-          "text":"Yeah boss - let's fix it!",
+          "id": "ship_broken",
+          "trigger": "You know the ship is broken?",
+          "text": "Yeah boss - let's fix it!",
           "choices": ["choke_up"],
           "ignoreAfterVisit": true
         },
         {
-          "id":"choke_up",
+          "id": "choke_up",
           "trigger": "Continue",
           "text": "You choke up, you can't continue the conversation. You smile, pat Bear on the arm and leave.",
-          "exitPoint":true
+          "exitPoint": true
         }
       ]
     },
@@ -245,7 +245,7 @@
           "trigger": "You know what I have to do, right?",
           "text": "Yep, and I'm glad you're makin the call",
           "canBeRecalled": true,
-          "choices": ["volunteer", "who", "give_it"]
+          "choices": ["volunteer", "who", "start"]
         },
         {
           "id": "volunteer",
@@ -256,11 +256,6 @@
           "id": "who",
           "trigger": "Who would you..?",
           "text": "That's not a question you should be asking me."
-        },
-        {
-          "id": "give_it",
-          "trigger": "Do you think we should let Earth know about the attack?",
-          "text": "I don't like to see people get hurt, but in the end - someone always does. You make that call Cap'n, not me"
         },
         {
           "id": "what_do",
@@ -304,7 +299,7 @@
           "trigger": "Let's talk some more.",
           "text": "Captain. How can I help?",
           "entryPoint": true,
-          "choices": ["fix", "air"]
+          "choices": ["fix", "colonist", "air"]
         },
         {
           "id": "fix",
@@ -348,6 +343,81 @@
           "trigger": "I'll see what else I can do.",
           "text": "We'll make it Captain.",
           "exitPoint": true
+        },
+        {
+          "id": "colonist",
+          "trigger": "You're a colonist, right?",
+          "text": "No sir. I was born on Mars. I choose to serve in The Colonies as part of their militia.",
+          "choices": ["why"]
+        },
+        {
+          "id": "why",
+          "trigger": "Then why choose to work with The Colonies?",
+          "text": "Just wanted to show them we aren't all bad sir",
+          "choices": ["and"]
+        },
+        {
+          "id": "and",
+          "trigger": "And how did that go?",
+          "text": "Not well.",
+          "choices": ["letter"]
+        },
+        {
+          "id": "letter",
+          "trigger": "[letter] Is that why you resigned?",
+          "text": "They wouldn't listen. Earth and Mars are just trying to help. Trying to make us all be a family again."
+        }
+      ]
+    },
+    {
+      "id": "twins",
+      "name": "The twins, Alexi and Gregor",
+      "description": "The twins are two skinny men, both around their late 50s or 60s. Alexi and Gregor serve as cook and accountant respectively. Having been born on Earth, in Russia, they've only spent a few years in space and haven't yet become fully adapted to life in low gravity. They appear uncomfortable, a mix of the low gravity, their heated conversation, and the choice that's on everyone's mind.",
+      "aliases": ["alexi", "gregor"],
+      "afterDeath": "Right before the airlock closed the twins decided they couldn't bear to be parted. They didn't give you time to refuse or rethink your choice. When the end came and the hatch to dark space slid open the twins didn't look at it, or you. They could only hold on to each other, their tears freezing on smiling faces as they left for the void, together.",
+      "conversations": [
+        {
+          "id": "start",
+          "trigger": "Let's talk about something else",
+          "text": "Alexi: \"Hello Captain\"",
+          "entryPoint": true,
+          "canBeRecalled": true,
+          "choices": ["talking_about", "photo", "wish"]
+        },
+        {
+          "id": "talking_about",
+          "trigger": "What are you two talking about?",
+          "text": "Alexi: \"Nothing Captain\" \nGregor: \"Not true - we're talking about the war\"",
+          "choices": ["war"]
+        },
+        {
+          "id": "war",
+          "trigger": "War? You can hardly call a few border skirmishes a war.",
+          "text": "Gregor: \"You don't get to decide what is and isn't war. People are dying - that has to be explained somehow. The Colonies have been itching to get their hands dirty, show the inner planets that they've got teeth. \n\nAlexi: \"It's not like Earth and Mars have been pacifists, this is just as much their fault as it is The Colonies.\"",
+          "canBeRecalled": true,
+          "choices": ["colonies", "earth_mars", "start"]
+        },
+        {
+          "id": "colonies",
+          "trigger": "The Colonies can't be expected to put up with Earth and Mar's oppression forever.",
+          "text": "Alexi: \"Yes, but does that justify violence?\""
+        },
+        {
+          "id": "earth_mars",
+          "trigger": "Earth and Mars want a peaceful end to this, they stand to lose just as much as The Colonies do.",
+          "text": "Gregor: \"How incredibly naive Captain. You can't seriously think that Earth and Mars want anything but control?\" "
+        },
+        {
+          "id": "photo",
+          "trigger": "[photo] You guys looked a lot younger here, who is this girl in the middle?",
+          "mustHaveItem": "photo",
+          "text": "Gregor: \"That's our sister, we must have been in our thirties when that was taken - and she must have been around twenty or so.\" \n\nAlexi: \"We haven't seen her in a long time.\"",
+          "choices": ["where"]
+        },
+        {
+          "id": "where",
+          "trigger": "Where is she now?",
+          "text": "Gregor: \"Can't say. Last I heard she'd taken a shuttle out to work on one of the hydrogen mines around Jupiter.\" \n\nAlexi: \"Space is a big place, hard to keep in contact.\""
         }
       ]
     }

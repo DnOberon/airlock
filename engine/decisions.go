@@ -149,7 +149,7 @@ func talkTo(state *State, arguments ...string) {
 	}
 
 	for _, character := range state.CurrentLocation.ActiveCharacters {
-		if strings.ToLower(character.Name) == strings.ToLower(arguments[0]) {
+		if strings.ToLower(character.Name) == strings.ToLower(arguments[0]) || in(strings.ToLower(strings.Join(arguments, " ")), character.Aliases) {
 			state.Characters = append(state.Characters, character)
 
 			entry := convoengine.FindEntryNode(character.RootConversationNode)
@@ -188,6 +188,10 @@ func examinePointOfInterest(state *State, arguments ...string) {
 		if strings.ToLower(character.Name) == strings.ToLower(strings.Join(arguments, " ")) {
 			fmt.Print(wordwrap.WrapString(character.Description, 80))
 			return
+		}
+
+		if in(strings.ToLower(strings.Join(arguments, " ")), character.Aliases) {
+			fmt.Print(wordwrap.WrapString(character.Description, 80))
 		}
 	}
 
@@ -297,7 +301,7 @@ func jettisonCharacter(state *State, arguments ...string) {
 	for _, character := range state.Characters {
 		buf := bufio.NewReader(os.Stdin)
 
-		if strings.ToLower(character.Name) == strings.ToLower(arguments[0]) {
+		if strings.ToLower(character.Name) == strings.ToLower(arguments[0]) || in(strings.ToLower(strings.Join(arguments, " ")), character.Aliases) {
 			fmt.Println(wordwrap.WrapString(character.AfterDeath, 80))
 			fmt.Println()
 
@@ -390,16 +394,16 @@ func help(state *State, arguments ...string) {
 
 help                      - repeats this message
 exit                      - ends the game
-move [cardinal direction] - moves the player to the north, south, east, or west
+go [cardinal direction] - moves the player to the north, south, east, or west
 go back                   - returns the player to their previous location
 look around               - lists points of interest and any people present in the player's current location
 where am I                - prints player's location and the surrounding areas
 who is here               - lists any people present in the player's location
 talk to [person's name]   - initiates conversation with desired person
+stop                      - exits conversation if currently talking to a character
 examine [name or thing]   - provides a description of the character or point of interest selected
 take [thing]              - adds item to inventory
 inventory                 - list items in inventory 
-drop [thing]              - drop item from inventory into current location
 
 jettison [name]           - jettisons the selected crew member to space and ends the game
 `)

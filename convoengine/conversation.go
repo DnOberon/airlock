@@ -44,9 +44,9 @@ func (root *ConversationNode) Talk(itemList []*items.Item) {
 
 	// text after visited
 	if root.visited && root.AfterVisitedText != "" {
-		fmt.Println(wordwrap.WrapString("\""+root.AfterVisitedText+"\"", 80))
+		fmt.Println(wordwrap.WrapString(root.AfterVisitedText, 80))
 	} else {
-		fmt.Println(wordwrap.WrapString("\""+root.Text+"\"", 80))
+		fmt.Println(wordwrap.WrapString(root.Text, 80))
 	}
 
 	fmt.Println()
@@ -93,6 +93,10 @@ func (root *ConversationNode) Talk(itemList []*items.Item) {
 	in, err := buf.ReadString('\n')
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if strings.TrimSpace(strings.ToLower(in)) == "stop" {
+		return
 	}
 
 	node, ok := choiceMap[strings.TrimSpace(strings.TrimSuffix(in, "\n"))]
