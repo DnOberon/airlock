@@ -34,7 +34,7 @@ const BaseGame = `{
     {
       "id": "letter",
       "name": "letter",
-      "description": "The letter looks very formal and is very creased, as if it'd been opened and closed numerous times. You open it slightly and see the official seal of The Colonies. The letter is addressed to an ethics board. You can't see anything else unless you open the letter further."
+      "description": "The letter looks very formal and is very creased, as if it'd been opened and closed numerous times. You open it slightly and see the official seal of The Colonies. The letter is addressed to an ethics board. You can't see anything else unless you open the letter further - you don't want to pry."
     }
   ],
   "locations": [
@@ -44,6 +44,7 @@ const BaseGame = `{
       "entryPoint": true,
       "description": "This is your cabin, and it has seen better days. Off to the left is your bunk, covered in clothes and data pads. To your right sits your desk - which is also a disaster. A single yellow light bar runs through the room lengthwise and gives off only a faint yellow light. On your desk sits a single picture and what looks like a newspaper.",
       "directions": ["_", "-", "north_hallway", "-"],
+      "characters": ["twins"],
       "pointsOfInterest": [
         {
           "name": "picture",
@@ -195,7 +196,7 @@ const BaseGame = `{
           "trigger": "Hey big guy",
           "text": "Bear looks at you and smiles.",
           "ignoreAfterVisit": true,
-          "choices": ["big_guy"]
+          "choices": ["big_guy", "end"]
         },
         {
           "id": "big_guy",
@@ -215,6 +216,12 @@ const BaseGame = `{
           "id": "choke_up",
           "trigger": "Continue",
           "text": "You choke up, you can't continue the conversation. You smile, pat Bear on the arm and leave.",
+          "exitPoint": true
+        },
+        {
+          "id": "end",
+          "trigger": "Cya big guy",
+          "text": "Bear smiles",
           "exitPoint": true
         }
       ]
@@ -319,7 +326,7 @@ const BaseGame = `{
           "trigger": "Let's talk some more.",
           "text": "Captain. How can I help?",
           "entryPoint": true,
-          "choices": ["fix", "colonist", "air"]
+          "choices": ["fix", "colonist", "air", "end"]
         },
         {
           "id": "fix",
@@ -359,12 +366,6 @@ const BaseGame = `{
           "exitPoint": true
         },
         {
-          "id": "end",
-          "trigger": "I'll see what else I can do.",
-          "text": "We'll make it Captain.",
-          "exitPoint": true
-        },
-        {
           "id": "colonist",
           "trigger": "You're a colonist, right?",
           "text": "No sir. I was born on Mars. I choose to serve in The Colonies as part of their militia.",
@@ -385,7 +386,14 @@ const BaseGame = `{
         {
           "id": "letter",
           "trigger": "[letter] Is that why you resigned?",
+          "mustHaveItem": "letter",
           "text": "They wouldn't listen. Earth and Mars are just trying to help. Trying to make us all be a family again."
+        },
+        {
+          "id": "end",
+          "trigger": "I'll see what else I can do.",
+          "text": "We'll make it Captain.",
+          "exitPoint": true
         }
       ]
     },
@@ -402,7 +410,7 @@ const BaseGame = `{
           "text": "Alexi: \"Hello Captain\"",
           "entryPoint": true,
           "canBeRecalled": true,
-          "choices": ["talking_about", "photo", "wish"]
+          "choices": ["talking_about", "photo", "wish", "end"]
         },
         {
           "id": "talking_about",
@@ -437,7 +445,14 @@ const BaseGame = `{
         {
           "id": "where",
           "trigger": "Where is she now?",
-          "text": "Gregor: \"Can't say. Last I heard she'd taken a shuttle out to work on one of the hydrogen mines around Jupiter.\" \n\nAlexi: \"Space is a big place, hard to keep in contact.\""
+          "text": "Gregor: \"Can't say. Last I heard she'd taken a shuttle out to work on one of the hydrogen mines around Jupiter.\" \n\nAlexi: \"Space is a big place, hard to keep in contact.\"",
+          "choices": ["start", "end"]
+        },
+        {
+          "id": "end",
+          "trigger": "Let's talk later",
+          "text": "In unison: \"Until next time.\"",
+          "exitPoint": true
         }
       ]
     }
